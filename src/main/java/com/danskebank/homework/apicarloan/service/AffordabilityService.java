@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 
 public abstract class AffordabilityService {
 
+  public static final BigDecimal CHILDREN_COEFFICIENT = BigDecimal.valueOf(400);
+  public static final BigDecimal ADULT_COEFFICIENT = BigDecimal.valueOf(600);
+
   protected Applicant applicant;
   protected AffordabilityRepository affordabilityRepository;
 
@@ -18,11 +21,16 @@ public abstract class AffordabilityService {
 
   public abstract BigDecimal getMaritalCoefficient();
 
-  public Long createAffordability() {
-    BigDecimal maritalCoefficient = getMaritalCoefficient();
-    System.out.println(applicant.getMaritalStatus() + "" + applicant.getAdultNo());
-    BigDecimal subtract = applicant.getIncomeAfterTax().subtract(BigDecimal.valueOf(applicant.getChildrenNo() * 400)).subtract(BigDecimal.valueOf(applicant.getAdultNo() * 600));
-    return saveAffordability(new Affordability(subtract, applicant));
+  public Long getAffordability() {
+    BigDecimal affordability = calculateAffordability();
+    return saveAffordability(new Affordability(affordability, applicant));
+  }
+
+  private BigDecimal calculateAffordability() {
+    return applicant.getIncomeAfterTax()
+            .subtract(BigDecimal.valueOf(applicant.getChildrenNo()).multiply(CHILDREN_COEFFICIENT))
+            .subtract(BigDecimal.valueOf(applicant.getAdultNo()).multiply(ADULT_COEFFICIENT))
+            .multiply(getMaritalCoefficient());
   }
 
   public Long saveAffordability(Affordability affordability) {

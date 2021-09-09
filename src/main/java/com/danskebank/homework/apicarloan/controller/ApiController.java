@@ -40,7 +40,7 @@ public class ApiController {
 
   @PostMapping("/affordabilityCalculation")
   public ResponseEntity<Long> getAffordability(@Valid @RequestBody ApplicantDto applicant) {
-    return new ResponseEntity<>(affordabilityServiceFactory.getAffordabilityService(applicantMapper.toEntity(applicant)).createAffordability(), HttpStatus.OK);
+    return new ResponseEntity<>(affordabilityServiceFactory.getAffordabilityService(applicantMapper.toEntity(applicant)).getAffordability(), HttpStatus.OK);
   }
 
   @PostMapping("/quoteCalculation")
