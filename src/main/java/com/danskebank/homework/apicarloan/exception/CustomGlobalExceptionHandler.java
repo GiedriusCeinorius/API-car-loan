@@ -25,12 +25,6 @@ public class CustomGlobalExceptionHandler  extends ResponseEntityExceptionHandle
     CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), "Bad argument! " + field, ApiErrorCode.API_ERROR_001);
     return new ResponseEntity<>(customErrorDetails, HttpStatus.BAD_REQUEST);
   }
-//
-//  @ExceptionHandler(ConstraintViolationException.class)
-//  public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
-//    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), ex.getMessage(), ApiErrorCode.API_ERROR001, request.getDescription(false));
-//    return new ResponseEntity<>(customErrorDetails, HttpStatus.BAD_REQUEST);
-//  }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {

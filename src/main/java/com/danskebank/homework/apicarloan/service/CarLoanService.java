@@ -38,11 +38,11 @@ public class CarLoanService implements LoanService {
     Quote quote = new Quote(calculateQuote(car, bankMargin));
     quote.setCar(car);
     Quote savedQuote = quoteRepository.save(quote);
-    return new QuoteCalculationResponse(savedQuote.getId(), savedQuote.getQuote());
+    return new QuoteCalculationResponse(savedQuote.getId(), savedQuote.getQuoteValue());
   }
 
   private BigDecimal calculateQuote(Car car, BankMargin bankMargin) {
-    return (car.getPrice().divide(BigDecimal.valueOf(car.getLoanLength()), RoundingMode.HALF_UP)).multiply(COEFFICIENT.add(bankMargin.getBankMargin()));
+    return (car.getPrice().divide(BigDecimal.valueOf(car.getLoanLength()), RoundingMode.HALF_UP)).multiply(COEFFICIENT.add(bankMargin.getBankMarginValue()));
   }
 
   public String getDecision(Long affordabilityId, Long quoteId) {

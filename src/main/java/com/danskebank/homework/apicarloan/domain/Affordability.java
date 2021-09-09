@@ -27,7 +27,7 @@ public class Affordability {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private BigDecimal affordability;
+  private BigDecimal affordabilityValue;
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "applicant_id")
   private Applicant applicant;
@@ -36,8 +36,8 @@ public class Affordability {
   @OneToMany(mappedBy = "affordability", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Quote> quotes = new ArrayList<>();
 
-  public Affordability(BigDecimal affordability, Applicant applicant) {
-    this.affordability = affordability;
+  public Affordability(BigDecimal affordabilityValue, Applicant applicant) {
+    this.affordabilityValue = affordabilityValue;
     this.applicant = applicant;
   }
 }

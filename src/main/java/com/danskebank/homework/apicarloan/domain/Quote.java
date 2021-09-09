@@ -24,7 +24,7 @@ public class Quote {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  private BigDecimal quote;
+  private BigDecimal quoteValue;
 
 
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -36,7 +36,7 @@ public class Quote {
   @ToString.Exclude
   private Affordability affordability;
 
-  public Quote(BigDecimal quote) {
-    this.quote = quote;
+  public Quote(BigDecimal quoteValue) {
+    this.quoteValue = quoteValue;
   }
 }

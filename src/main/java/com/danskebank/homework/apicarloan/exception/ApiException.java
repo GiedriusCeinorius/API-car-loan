@@ -5,19 +5,11 @@ import org.springframework.http.HttpStatus;
 
 public class ApiException extends RuntimeException{
 
-  private ApiErrorCode apiErrorCode;
-  private HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-
-  public ApiException() {
-    super();
-  }
+  private final ApiErrorCode apiErrorCode;
+  private final HttpStatus httpStatus;
 
   public ApiException(ApiErrorCode apiErrorCode) {
     this(apiErrorCode.getErrorMessage(), apiErrorCode, HttpStatus.BAD_REQUEST);
-  }
-
-  public ApiException(ApiErrorCode apiErrorCode, HttpStatus httpStatus) {
-    this(apiErrorCode.getErrorMessage(), apiErrorCode, httpStatus);
   }
 
   public ApiException(String message, ApiErrorCode apiErrorCode, HttpStatus httpStatus) {

@@ -12,5 +12,5 @@ public class BankMargin {
 
   @Id
   private Long id;
-  private BigDecimal bankMargin;
+  private BigDecimal bankMarginValue;
 }
