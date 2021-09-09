@@ -1,61 +1,55 @@
 package com.danskebank.homework.apicarloan.controller;
 
-import com.danskebank.homework.apicarloan.domain.Affordability;
-import com.danskebank.homework.apicarloan.domain.Applicant;
-import com.danskebank.homework.apicarloan.domain.Car;
-import com.danskebank.homework.apicarloan.domain.Quote;
-import com.danskebank.homework.apicarloan.dto.CreditDecisionRequest;
-import com.danskebank.homework.apicarloan.dto.QuoteCalculationResponse;
+import com.danskebank.homework.apicarloan.controller.response.QuoteCalculationResponse;
+import com.danskebank.homework.apicarloan.dto.ApplicantDto;
+import com.danskebank.homework.apicarloan.dto.CarDto;
+import com.danskebank.homework.apicarloan.mapper.ApplicantMapper;
+import com.danskebank.homework.apicarloan.mapper.CarMapper;
 import com.danskebank.homework.apicarloan.service.AffordabilityServiceFactory;
-import com.danskebank.homework.apicarloan.service.ApplicantService;
 import com.danskebank.homework.apicarloan.service.CarLoanService;
-import com.danskebank.homework.apicarloan.service.CreditDecisionService;
-import com.danskebank.homework.apicarloan.service.QuoteCalculationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
 
 @RestController
 @RequestMapping("/loan")
 public class ApiController {
 
   private final AffordabilityServiceFactory affordabilityServiceFactory;
-  private final ApplicantService applicantService;
-  private final QuoteCalculationService quoteCalculationService;
   private final CarLoanService carLoanService;
-  private final CreditDecisionService creditDecisionService;
+  private final ApplicantMapper applicantMapper;
+  private final CarMapper carMapper;
 
   public ApiController(AffordabilityServiceFactory affordabilityServiceFactory,
-                       ApplicantService applicantService,
-                       QuoteCalculationService quoteCalculationService,
                        CarLoanService carLoanService,
-                       CreditDecisionService creditDecisionService) {
+                       ApplicantMapper applicantMapper,
+                       CarMapper carMapper) {
     this.affordabilityServiceFactory = affordabilityServiceFactory;
-    this.applicantService = applicantService;
-    this.quoteCalculationService = quoteCalculationService;
     this.carLoanService = carLoanService;
-    this.creditDecisionService = creditDecisionService;
+    this.applicantMapper = applicantMapper;
+    this.carMapper = carMapper;
   }
 
-
   @PostMapping("/affordabilityCalculation")
-  public ResponseEntity<Long> getAffordability(@RequestBody Applicant applicant) {
-    Affordability affordability = affordabilityServiceFactory.getAffordabilityService(applicant).getAffordability();
-    return new ResponseEntity<>(applicantService.saveApplicantRequest(applicant, affordability), HttpStatus.OK);
+  public ResponseEntity<Long> getAffordability(@Valid @RequestBody ApplicantDto applicant) {
+    return new ResponseEntity<>(affordabilityServiceFactory.getAffordabilityService(applicantMapper.toEntity(applicant)).createAffordability(), HttpStatus.OK);
   }
 
   @PostMapping("/quoteCalculation")
-  public ResponseEntity<QuoteCalculationResponse> getQuote(@RequestBody Car car) {
-    Quote quote = quoteCalculationService.calculateQuote(car);
-    return new ResponseEntity<>(carLoanService.saveCarLoanRequest(car, quote), HttpStatus.OK);
+  public ResponseEntity<QuoteCalculationResponse> getQuote(@RequestBody CarDto car) {
+    return new ResponseEntity<>(carLoanService.getQuote(carMapper.toEntity(car)), HttpStatus.OK);
   }
 
-  @GetMapping("/creditDecision")
-  public ResponseEntity<String> getQuote(@RequestBody CreditDecisionRequest creditDecisionRequest) {
-    return new ResponseEntity<>(creditDecisionService.getDecision(creditDecisionRequest), HttpStatus.OK);
+  @GetMapping("/creditDecision/{affordabilityId}/{quoteId}")
+  public ResponseEntity<String> getQuote(@PathVariable(name = "affordabilityId") Long affordabilityId, @PathVariable(name = "quoteId") Long quoteId) {
+    return new ResponseEntity<>(carLoanService.getDecision(affordabilityId, quoteId), HttpStatus.OK);
   }
 }

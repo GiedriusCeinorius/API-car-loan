@@ -2,23 +2,31 @@ package com.danskebank.homework.apicarloan.service;
 
 import com.danskebank.homework.apicarloan.domain.Applicant;
 import com.danskebank.homework.apicarloan.enums.MaritalStatus;
+import com.danskebank.homework.apicarloan.repository.AffordabilityRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AffordabilityServiceFactory {
 
-  public ApplicantAffordabilityService getAffordabilityService(Applicant applicant) {
+  private final AffordabilityRepository affordabilityRepository;
+
+  public AffordabilityServiceFactory(AffordabilityRepository affordabilityRepository) {
+    this.affordabilityRepository = affordabilityRepository;
+  }
+
+
+  public AffordabilityService getAffordabilityService(Applicant applicant) {
     MaritalStatus applicantMaritalStatus = applicant.getMaritalStatus();
-    ApplicantAffordabilityService applicantAffordabilityService = null;
+    AffordabilityService affordabilityService = null;
     if (applicantMaritalStatus.equals(MaritalStatus.MARRIED)) {
-      applicantAffordabilityService = new MarriedApplicantAffordabilityService(applicant);
+      affordabilityService = new MarriedAffordabilityService(applicant, affordabilityRepository);
     }
     if (applicantMaritalStatus.equals(MaritalStatus.SINGLE)) {
-      applicantAffordabilityService = new SingleApplicantAffordabilityService(applicant);
+      affordabilityService = new SingleAffordabilityService(applicant, affordabilityRepository);
     }
     if (applicantMaritalStatus.equals(MaritalStatus.DIVORCED)) {
-      applicantAffordabilityService = new DivorcedApplicantAffordabilityService(applicant);
+      affordabilityService = new DivorcedAffordabilityService(applicant, affordabilityRepository);
     }
-    return applicantAffordabilityService;
+    return affordabilityService;
   }
 }

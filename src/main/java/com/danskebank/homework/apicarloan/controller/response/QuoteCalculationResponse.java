@@ -1,4 +1,4 @@
-package com.danskebank.homework.apicarloan.dto;
+package com.danskebank.homework.apicarloan.controller.response;
 
 import lombok.Data;
 

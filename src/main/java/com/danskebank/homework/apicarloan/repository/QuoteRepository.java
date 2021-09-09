@@ -1,9 +1,9 @@
 package com.danskebank.homework.apicarloan.repository;
 
-import com.danskebank.homework.apicarloan.domain.Applicant;
+import com.danskebank.homework.apicarloan.domain.Quote;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ApplicantRepository extends CrudRepository<Applicant, Long> {
+public interface QuoteRepository extends CrudRepository<Quote, Long> {
 }

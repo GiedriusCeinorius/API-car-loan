@@ -1,16 +1,15 @@
 package com.danskebank.homework.apicarloan.service;
 
 import com.danskebank.homework.apicarloan.domain.Applicant;
-import org.springframework.stereotype.Service;
+import com.danskebank.homework.apicarloan.repository.AffordabilityRepository;
 
 import java.math.BigDecimal;
 
-public class DivorcedApplicantAffordabilityService extends ApplicantAffordabilityService {
+public class DivorcedAffordabilityService extends AffordabilityService {
 
-
-
-  public DivorcedApplicantAffordabilityService(Applicant applicant) {
-    super.applicant = applicant;
+  public DivorcedAffordabilityService(Applicant applicant,
+                                      AffordabilityRepository affordabilityRepository) {
+    super(applicant, affordabilityRepository);
   }
 
   @Override
