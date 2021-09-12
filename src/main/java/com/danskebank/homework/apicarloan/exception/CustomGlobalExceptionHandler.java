@@ -22,19 +22,19 @@ public class CustomGlobalExceptionHandler  extends ResponseEntityExceptionHandle
     for (FieldError error : ex.getBindingResult().getFieldErrors()) {
       field = error.getField();
     }
-    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), "Bad argument! " + field, ApiErrorCode.API_ERROR_001);
+    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), "Bad argument! " + field, ApiErrorCode.API_ERROR_004);
     return new ResponseEntity<>(customErrorDetails, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
-    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), ex.getMessage(), ApiErrorCode.API_ERROR_001);
+    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), ex.getMessage(), ApiErrorCode.API_ERROR_004);
     return new ResponseEntity<>(customErrorDetails, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(ApiException.class)
   public ResponseEntity<Object> handleIllegalArgumentException(ApiException ex, WebRequest request) {
-    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), ex.getMessage(), ApiErrorCode.API_ERROR_001);
-    return new ResponseEntity<>(customErrorDetails, HttpStatus.BAD_REQUEST);
+    CustomErrorDetails customErrorDetails = new CustomErrorDetails(LocalDateTime.now(), ex.getMessage(), ex.getApiErrorCode());
+    return new ResponseEntity<>(customErrorDetails, ex.getHttpStatus());
   }
 }

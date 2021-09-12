@@ -25,8 +25,6 @@ public class Quote {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private BigDecimal quoteValue;
-
-
   @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "car_id")
   private Car car;
@@ -35,7 +33,6 @@ public class Quote {
   @JsonBackReference
   @ToString.Exclude
   private Affordability affordability;
-
   public Quote(BigDecimal quoteValue) {
     this.quoteValue = quoteValue;
   }

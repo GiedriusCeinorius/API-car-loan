@@ -1,5 +1,6 @@
 package com.danskebank.homework.apicarloan.service;
 
+import com.danskebank.homework.apicarloan.controller.response.CreditDecisionResponse;
 import com.danskebank.homework.apicarloan.controller.response.QuoteCalculationResponse;
 import com.danskebank.homework.apicarloan.domain.Affordability;
 import com.danskebank.homework.apicarloan.domain.BankMargin;
@@ -33,7 +34,7 @@ public class CarLoanService implements LoanService {
     this.bankMarginRepository = bankMarginRepository;
   }
 
-  public QuoteCalculationResponse getQuote(Car car) {
+  public QuoteCalculationResponse createQuote(Car car) {
     BankMargin bankMargin = bankMarginRepository.findById(1L).orElseThrow(() -> new ApiException(ApiErrorCode.API_ERROR_001));
     Quote quote = new Quote(calculateQuote(car, bankMargin));
     quote.setCar(car);
@@ -42,16 +43,20 @@ public class CarLoanService implements LoanService {
   }
 
   private BigDecimal calculateQuote(Car car, BankMargin bankMargin) {
-    return (car.getPrice().divide(BigDecimal.valueOf(car.getLoanLength()), RoundingMode.HALF_UP)).multiply(COEFFICIENT.add(bankMargin.getBankMarginValue()));
+    return (car.getPrice()
+            .divide(BigDecimal.valueOf(car.getLoanLength()), RoundingMode.HALF_EVEN))
+            .multiply(COEFFICIENT.add(bankMargin.getBankMarginValue()))
+            .setScale(2, RoundingMode.HALF_EVEN);
   }
 
-  public String getDecision(Long affordabilityId, Long quoteId) {
+  public CreditDecisionResponse getDecision(Long affordabilityId, Long quoteId) {
     Affordability affordability = affordabilityRepository.findById(affordabilityId).orElseThrow(() -> new ApiException(ApiErrorCode.API_ERROR_002));
     Quote quote = quoteRepository.findById(quoteId).orElseThrow(() -> new ApiException(ApiErrorCode.API_ERROR_003));
     List<Quote> quotes = affordability.getQuotes();
     quotes.add(quote);
     quote.setAffordability(affordability);
     quoteRepository.save(quote);
-    return "YES";
+    String decision = affordability.getAffordabilityValue().compareTo(quote.getQuoteValue()) > 0 ? "YES" : "NO";
+    return new CreditDecisionResponse(decision);
   }
 }

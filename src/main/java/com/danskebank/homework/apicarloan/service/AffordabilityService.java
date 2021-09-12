@@ -1,10 +1,12 @@
 package com.danskebank.homework.apicarloan.service;
 
+import com.danskebank.homework.apicarloan.controller.response.AffordabilityCalculationResponse;
 import com.danskebank.homework.apicarloan.domain.Affordability;
 import com.danskebank.homework.apicarloan.domain.Applicant;
 import com.danskebank.homework.apicarloan.repository.AffordabilityRepository;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public abstract class AffordabilityService {
 
@@ -21,16 +23,18 @@ public abstract class AffordabilityService {
 
   public abstract BigDecimal getMaritalCoefficient();
 
-  public Long getAffordability() {
+  public AffordabilityCalculationResponse createAffordability() {
     BigDecimal affordability = calculateAffordability();
-    return saveAffordability(new Affordability(affordability, applicant));
+    Long affordabilityId = saveAffordability(new Affordability(affordability, applicant));
+    return new AffordabilityCalculationResponse(affordabilityId);
   }
 
   private BigDecimal calculateAffordability() {
     return applicant.getIncomeAfterTax()
             .subtract(BigDecimal.valueOf(applicant.getChildrenNo()).multiply(CHILDREN_COEFFICIENT))
             .subtract(BigDecimal.valueOf(applicant.getAdultNo()).multiply(ADULT_COEFFICIENT))
-            .multiply(getMaritalCoefficient());
+            .multiply(getMaritalCoefficient())
+            .setScale(2, RoundingMode.HALF_EVEN);
   }
 
   public Long saveAffordability(Affordability affordability) {

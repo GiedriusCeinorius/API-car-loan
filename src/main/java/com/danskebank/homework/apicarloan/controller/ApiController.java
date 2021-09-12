@@ -1,5 +1,7 @@
 package com.danskebank.homework.apicarloan.controller;
 
+import com.danskebank.homework.apicarloan.controller.response.AffordabilityCalculationResponse;
+import com.danskebank.homework.apicarloan.controller.response.CreditDecisionResponse;
 import com.danskebank.homework.apicarloan.controller.response.QuoteCalculationResponse;
 import com.danskebank.homework.apicarloan.dto.ApplicantDto;
 import com.danskebank.homework.apicarloan.dto.CarDto;
@@ -39,17 +41,17 @@ public class ApiController {
   }
 
   @PostMapping("/affordabilityCalculation")
-  public ResponseEntity<Long> getAffordability(@Valid @RequestBody ApplicantDto applicant) {
-    return new ResponseEntity<>(affordabilityServiceFactory.getAffordabilityService(applicantMapper.toEntity(applicant)).getAffordability(), HttpStatus.OK);
+  public ResponseEntity<AffordabilityCalculationResponse> createAffordability(@Valid @RequestBody ApplicantDto applicant) {
+    return new ResponseEntity<>(affordabilityServiceFactory.getAffordabilityService(applicantMapper.toEntity(applicant)).createAffordability(), HttpStatus.OK);
   }
 
   @PostMapping("/quoteCalculation")
-  public ResponseEntity<QuoteCalculationResponse> getQuote(@RequestBody CarDto car) {
-    return new ResponseEntity<>(carLoanService.getQuote(carMapper.toEntity(car)), HttpStatus.OK);
+  public ResponseEntity<QuoteCalculationResponse> createQuote(@Valid @RequestBody CarDto car) {
+    return new ResponseEntity<>(carLoanService.createQuote(carMapper.toEntity(car)), HttpStatus.OK);
   }
 
   @GetMapping("/creditDecision/{affordabilityId}/{quoteId}")
-  public ResponseEntity<String> getQuote(@PathVariable(name = "affordabilityId") Long affordabilityId, @PathVariable(name = "quoteId") Long quoteId) {
+  public ResponseEntity<CreditDecisionResponse> getDecision(@PathVariable(name = "affordabilityId") Long affordabilityId, @PathVariable(name = "quoteId") Long quoteId) {
     return new ResponseEntity<>(carLoanService.getDecision(affordabilityId, quoteId), HttpStatus.OK);
   }
 }

@@ -1,8 +1,10 @@
 package com.danskebank.homework.apicarloan.exception;
 
 import com.danskebank.homework.apicarloan.enums.ApiErrorCode;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
+@Data
 public class ApiException extends RuntimeException{
 
   private final ApiErrorCode apiErrorCode;
